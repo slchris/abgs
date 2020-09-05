@@ -1,0 +1,22 @@
+* Automatically build gentoo X86_64 Stage3 file
+
+Use GitHub Actions to build Gentoo Stage files
+
+
+
+** how to use?
+
+fork this project, edit the stage1 configuration file in ab.sh.
+
+
+Waiting for build after submission.
+
+:)
+
+* TODO TODO List
+- More flexible construction
+- Multiple jobs in parallel
+- Update the software for the local machine
+
+
+

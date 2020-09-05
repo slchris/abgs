@@ -1,0 +1,44 @@
+name: Gentoo Stage1 For x86_64
+
+#on:
+#  schedule:
+#  - cron: ""
+
+on: 
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  stage1:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master    
+    - name: bootstrap stage1
+      run: |
+        set -x        	
+        ./ab.sh auto
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: packages
+        release_name: Gentoo Stage file
+        body: Daily build
+
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ./out/stage3.tar.bz2
+        asset_name: stage3.tar.bz2
+        asset_content_type: application/zip
+
