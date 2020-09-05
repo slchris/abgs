@@ -14,7 +14,7 @@ jobs:
     - name: bootstrap stage1
       run: |
         set -x        	
-        ./ab.sh _test
+        ./ab.sh auto
     - name: Stage1  packages
       uses: actions/upload-artifact@master
       with:
