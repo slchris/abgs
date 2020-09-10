@@ -15,9 +15,29 @@ jobs:
       run: |
         set -x        	
         ./ab.sh auto
-    - name: Stage1  packages
-      uses: actions/upload-artifact@master
+    - name: Set Release Name
+      id: artifact
+      run: |
+        release_tag="$(date +%Y-%m-%d)"
+        echo "##[set-output name=release_tag;]$release_tag"
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
-        name: Stage3 Files
-        path: out/stage3.tar.bz2        
+        tag_name: ${{ steps.artifact.outputs.release_tag }}
+        release_name: Auto Release ${{ steps.artifact.outputs.release_tag }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: out/stage3.tar.bz2
+        asset_name: stage3.tar.bz2
+        asset_content_type: application/x-bzip2
 
